@@ -29,23 +29,12 @@ readReceiverSensors();
 // rudderPosition = windAngle;
 //**************** your code here ******************
 
-if ((windAngle > -45) && (windAngle < 45))
+if ((windAngle > 45) || (windAngle < -45)
 {
-    rudderPosition = 0;
+    rudderPosition = ((windAngle - 45) / 180) * 50;
+    sailPosition = 0;
 }
-else if ((windAngle < -45) && (windAngle > -135))
-{
-  rudderPosition = -50;
-}
-else if ((windAngle < 135) && (windAngle > 135))
-{
-  rudderPosition = 50;
-}
-else 
-{
- rudderPosition = 25;
-}
-  
+
 /********************* send commands to motors *************************/
   driveSailServo(sailPosition);
   driveRudderServo(rudderPosition);
