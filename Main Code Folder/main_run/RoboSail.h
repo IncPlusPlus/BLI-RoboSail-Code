@@ -1,3 +1,7 @@
+float desBoatAngle = 0;
+
+
+
 //determine these values using the hardware test programs and fill in the appropriate values
 int RUDDER_HIGH = 1900;   //nominal 2000
 int RUDDER_LOW = 1100;    //nominal 1000
