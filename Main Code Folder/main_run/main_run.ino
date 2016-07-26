@@ -6,6 +6,7 @@ Find detailed description in Decription tab
 #include <Servo.h>
 #include "RoboSail.h"
 boolean verbose = true;  //true calls function for values to be printed to monitor
+boolean Auto = true;
 
 //Fill in min/max parameters for the RC Receiver and WindSensor in RoboSail.h tab
 
@@ -29,11 +30,84 @@ readReceiverSensors();
 // rudderPosition = windAngle;
 //**************** your code here ******************
 
-if ((windAngle > 45) || (windAngle < -45)
+
+
+while (sailPulseWidth >= 2030)
 {
-    rudderPosition = ((windAngle - 45) / 180) * 50;
-    sailPosition = 0;
+    readReceiverSensors();
+    sailPosition = abs(windAngle) / 2; // round it eventually if not whole number 
+    rudderPosition = ((windAngle - desBoatAngle) / 180) * 50;
+    
+    if (rudderPulseWidth < 1005)
+    {
+      desBoatAngle = desBoatAngle - 45;
+          if (desBoatAngle < -180)
+          {
+            desBoatAngle = 135;
+          }
+    delay(500);
+    }
+    if (rudderPulseWidth > 1965)
+    {
+      desBoatAngle = desBoatAngle + 45;
+          if (desBoatAngle > 180)
+          {
+            desBoatAngle = -135;
+          }
+    delay(500);
+    }
+    Serial.print("Desired boat angle is: ");
+    Serial.println(desBoatAngle);
+    //if the rudder is out of range it will round
+    if (rudderPosition > 50)
+      {
+        rudderPosition = 50;
+      }
+     if (rudderPosition < -50)
+      {
+        rudderPosition = -50;
+       }
+   
+      driveSailServo(sailPosition);
+      driveRudderServo(rudderPosition);
+  
+      if (verbose) {printToMonitor();}
 }
+  
+
+  
+//the boat will sail 45 degrees to the wind
+// if ((windAngle < 45) && (windAngle >= -45)
+// {
+//     //rudderPosition = 45;
+//     sailPosition = 0;
+// }
+// else if ((windAngle < -45) && (windAngle > -90))
+// {
+//   //rudderPosition = -50;
+//   sailPosition = 13;
+// }
+// else if ((windAngle < -90) && (windAngle >= -135))
+// {
+//   //rudderPosition =  ;
+//   sailPosition = 43;
+// }
+// else if ((windAngle < -135) || (windAngle >= 135))
+// {
+//   //rudderPosition = -;
+//   sailPosition = 90;
+// }
+// else if ((windAngle <= 135 ) && (windAngle > 90))
+// {
+//   //rudderPosition = ;
+//   sailPosition = 43;
+// }
+// else 
+// {
+//   //rudderPosition = ;
+//   sailPosition = 13;
+// }
+
 
 /********************* send commands to motors *************************/
   driveSailServo(sailPosition);
@@ -42,4 +116,5 @@ if ((windAngle > 45) || (windAngle < -45)
   if (verbose) {printToMonitor();}
   
 } //end of loop()
+
 
