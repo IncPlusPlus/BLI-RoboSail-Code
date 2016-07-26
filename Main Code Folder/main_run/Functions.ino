@@ -16,7 +16,7 @@ void declarePins()
  // them to the servo positions in degrees.
  // Takes in the PWM signals from the WindSensor and translate 
  // it to the windvane position in degrees.
- void readReceiver()
+ void readReceiverSensors()
  {
   // Read the command pulse from the RC receiver
   rudderPulseWidth = pulseIn(RUDDER_RC_PIN, HIGH);
@@ -24,10 +24,7 @@ void declarePins()
   // Calculate the servo position in degrees.
   rudderPosition = map(rudderPulseWidth, RUDDER_LOW, RUDDER_HIGH, -60, 60);
   sailPosition = map(sailPulseWidth, SAIL_LOW, SAIL_HIGH, 0, 90);
- }
- 
- void readWind()
- {
+  
   // Read values from the WindSensor
   windPulseWidth = pulseIn(WIND_PIN, HIGH);
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
@@ -35,13 +32,6 @@ void declarePins()
   windAngle = constrain(windAngle, -180, 180);
  }
 
-void readAccel()   /* Read the Accelerometer event and put data in variables */ 
-{
-  accel.getEvent(&event); 
-  pitch = event.acceleration.x;
-  roll = event.acceleration.y;
-  yaw = event.acceleration.z;
-}
 /************Functions to drive Sail and Rudder servos ****************/
  // This code takes in the desired postions for the servos in degrees (as 
  // defined in RoboSail) then calculates appropriate values for the servo commands, 
@@ -99,11 +89,6 @@ void printToMonitor()
   Serial.print("  to servo: ");
   Serial.print(sailServoOut);
 
-  Serial.print("\n"); // Print a new line
- /* Display the results (acceleration is measured in m/s^2) */
-  Serial.print("Pitch: "); Serial.print(pitch); Serial.print("  ");
-  Serial.print("Roll: "); Serial.print(roll); Serial.print("  ");
-  Serial.print("Yaw: "); Serial.print(yaw); Serial.print("  ");Serial.println("m/s^2 ");
   Serial.print("\n"); // Print a new line
 }
 
