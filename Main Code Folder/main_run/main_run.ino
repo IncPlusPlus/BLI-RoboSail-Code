@@ -3,15 +3,18 @@
 Find detailed description in Decription tab
 */
 
-#include <Servo.h>
+#include <Servo.h>  
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_LSM303_U.h>
 #include "RoboSail.h"
 boolean verbose = true;  //true calls function for values to be printed to monitor
-boolean Auto = true;
 
 //Fill in min/max parameters for the RC Receiver and WindSensor in RoboSail.h tab
 
 void setup() {
   Serial.begin(115200);
+  accel.begin();
   Serial.println("\nRoboSail BoatCode - The Blobfish");  //write program name here
   // Set RC receiver and WindSensor on digital input pins
   declarePins();
@@ -45,6 +48,10 @@ while (sailPulseWidth >= 2030)
           {
             desBoatAngle = 135;
           }
+          if (desBoatAngle == 0)
+          {
+            desBoatAngle = -45;
+          }
     delay(500);
     }
     if (rudderPulseWidth > 1965)
@@ -53,6 +60,10 @@ while (sailPulseWidth >= 2030)
           if (desBoatAngle > 180)
           {
             desBoatAngle = -135;
+          }
+          if (desBoatAngle == 0)
+          {
+            desBoatAngle = 45;
           }
     delay(500);
     }
