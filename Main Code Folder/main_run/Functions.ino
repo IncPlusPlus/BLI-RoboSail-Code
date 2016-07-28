@@ -30,6 +30,12 @@ void declarePins()
   // Convert the wind angle to degrees from PWM.  Range -180 to +180
   windAngle = map(windPulseWidth, 0, WIND_HIGH, 180, -180);
   windAngle = constrain(windAngle, -180, 180);
+
+  // Read values from the accelerometer
+  accel.getEvent(&event); 
+  pitch = event.acceleration.x;
+  roll = event.acceleration.y;
+  yaw = event.acceleration.z;
  }
 
 /************Functions to drive Sail and Rudder servos ****************/
@@ -89,6 +95,11 @@ void printToMonitor()
   Serial.print("  to servo: ");
   Serial.print(sailServoOut);
 
+  Serial.print("\n"); // Print a new line
+   /* Display the results (acceleration is measured in m/s^2) */
+  Serial.print("Pitch: "); Serial.print(pitch); Serial.print("  ");
+  Serial.print("Roll: "); Serial.print(roll); Serial.print("  ");
+  Serial.print("Yaw: "); Serial.print(yaw); Serial.print("  ");Serial.println("m/s^2 ");
   Serial.print("\n"); // Print a new line
 }
 
