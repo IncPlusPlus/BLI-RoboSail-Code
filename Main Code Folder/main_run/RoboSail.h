@@ -1,6 +1,5 @@
-float desBoatAngle = 0;
-
-
+//Initialize the desired boat angle
+float desBoatAngle = 45;
 
 //determine these values using the hardware test programs and fill in the appropriate values
 int RUDDER_HIGH = 1900;   //nominal 2000
@@ -28,6 +27,14 @@ int windPulseWidth = 0;
 int rudderPosition = 0;
 int sailPosition = 45;
 
+float pitch = 0;
+float roll = 0;
+float yaw = 0;
+
 //create servo objects
 Servo rudderServo;
 Servo sailServo;
+
+//Assign ID to Accelerometer and define event 
+Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(54321);
+sensors_event_t event;
