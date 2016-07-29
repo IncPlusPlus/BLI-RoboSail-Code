@@ -1,3 +1,7 @@
+//Initialize the variable for how much is acceptable roll (this can be adjusted to your liking) as well as the factor to multiply the sail by
+float maxRoll = 3.5;
+float compensationFactor = 7;
+
 //Initialize the desired boat angle
 float desBoatAngle = 45;
 
