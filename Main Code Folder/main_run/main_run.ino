@@ -38,12 +38,13 @@ readReceiverSensors();
 while (sailPulseWidth >= 2030)
 {
     readReceiverSensors();
-    sailPosition = abs(windAngle) / 2; // round it eventually if not whole number 
-    rudderPosition = ((windAngle - desBoatAngle) / 180) * 50;
+    sailPosition = abs(windAngle) / 2;  //set the sail in relation to the wind, round it eventually if not whole number
+    rudderPosition = ((windAngle - desBoatAngle) / 180) * 50; //set the rudder position based on the desired angle relative to the wind
     
-    if (rudderPulseWidth < 1005)
+  
+    if (rudderPulseWidth < 1005) 
     {
-      desBoatAngle = desBoatAngle - 45;
+      desBoatAngle = desBoatAngle - 45; //if rudderPulseWidth is less than 1005, which is a swipe all the way left, subtract 45 degrees to the Boat angle in relation to the wind angle and wait 1/2 second
           if (desBoatAngle < -180)
           {
             desBoatAngle = 135;
@@ -54,7 +55,7 @@ while (sailPulseWidth >= 2030)
           }
     delay(500);
     }
-    if (rudderPulseWidth > 1965)
+    if (rudderPulseWidth > 1965) //if rudderPulseWidth is greater than 1965, which is a swipe all the way right, add 45 degrees to the Boat angle in relation to the wind angle and wait 1/2 second
     {
       desBoatAngle = desBoatAngle + 45;
           if (desBoatAngle > 180)
@@ -69,7 +70,7 @@ while (sailPulseWidth >= 2030)
     }
     Serial.print("Desired boat angle is: ");
     Serial.println(desBoatAngle);
-    //if the rudder is out of range it will round
+    //if the rudder is out of range it will round to 50 or -50 respectively 
     if (rudderPosition > 50)
       {
         rudderPosition = 50;
@@ -79,11 +80,18 @@ while (sailPulseWidth >= 2030)
         rudderPosition = -50;
        }
    
+  if (abs(roll) > maxRoll)  //If the roll value (which could be + or -) is greater than max allowed roll...
+  {
+    sailPosition = sailPosition + (abs(roll) * compensationFactor);  //adjust the sail accordingly
+  }
+  
       driveSailServo(sailPosition);
       driveRudderServo(rudderPosition);
   
       if (verbose) {printToMonitor();}
 }
+
+
   
 
   
