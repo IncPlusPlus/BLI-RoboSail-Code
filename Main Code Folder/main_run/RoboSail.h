@@ -1,9 +1,10 @@
 //Initialize the variable for how much is acceptable roll (this can be adjusted to your liking) as well as the factor to multiply the sail by
-float maxRoll = 3.5;
-float compensationFactor = 7;
+float maxRoll = 2.5;
+float compensationFactor = 8;
 
 //Initialize the desired boat angle
 float desBoatAngle = 45;
+float newdesBoatAngle = 45;
 
 //determine these values using the hardware test programs and fill in the appropriate values
 int RUDDER_HIGH = 1900;   //nominal 2000
