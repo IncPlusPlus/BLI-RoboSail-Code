@@ -39,37 +39,45 @@ while (sailPulseWidth >= 2030)
 {
     readReceiverSensors();
     sailPosition = abs(windAngle) / 2;  //set the sail in relation to the wind, round it eventually if not whole number
-    rudderPosition = ((windAngle - desBoatAngle) / 180) * 50; //set the rudder position based on the desired angle relative to the wind
+    
+    rudderPosition = (((windAngle - newdesBoatAngle) / 90) * 50) * -1; //set the rudder position based on the desired angle relative to the wind
+
+    if (abs(windAngle - newdesBoatAngle) > 180)
+    {
+      rudderPosition = rudderPosition * -1;
+    }
+
     
   
-    if (rudderPulseWidth < 1005) 
+    if (rudderPulseWidth < 1050)  //if rudderPulseWidth is less than 1005, which is a swipe all the way left, subtract 45 degrees to the Boat angle in relation to the wind angle and wait 1/2 second
     {
-      desBoatAngle = desBoatAngle - 45; //if rudderPulseWidth is less than 1005, which is a swipe all the way left, subtract 45 degrees to the Boat angle in relation to the wind angle and wait 1/2 second
-          if (desBoatAngle < -180)
+      newdesBoatAngle = newdesBoatAngle - 45;
+          if (newdesBoatAngle < -180) //in case the newdesBoatAngle goes less than -180, swing around to positive 135
           {
-            desBoatAngle = 135;
+            newdesBoatAngle = 135;
           }
-          if (desBoatAngle == 0)
+          if (newdesBoatAngle == 0) //in case the newdesBoatAngle goes to zero, go to -45
           {
-            desBoatAngle = -45;
+            newdesBoatAngle = -45;
           }
-    delay(500);
+      while (rudderPulseWidth < 1400)  {readReceiverSensors();}
     }
-    if (rudderPulseWidth > 1965) //if rudderPulseWidth is greater than 1965, which is a swipe all the way right, add 45 degrees to the Boat angle in relation to the wind angle and wait 1/2 second
+
+    if (rudderPulseWidth > 1800) //if rudderPulseWidth is greater than 1965, which is a swipe all the way right, add 45 degrees to the Boat angle in relation to the wind angle and wait 1/2 second
     {
-      desBoatAngle = desBoatAngle + 45;
-          if (desBoatAngle > 180)
+      newdesBoatAngle = newdesBoatAngle + 45;
+          if (newdesBoatAngle > 180)  //in the case that the newdesBoatAngle goes greater than 180, swing around to negative 135
           {
-            desBoatAngle = -135;
+            newdesBoatAngle = -135;
           }
-          if (desBoatAngle == 0)
+          if (newdesBoatAngle == 0) //in case the newdesBoatAngle goes to zero, go to 45
           {
-            desBoatAngle = 45;
+            newdesBoatAngle = 45;
           }
-    delay(500);
+      while (rudderPulseWidth > 1550)  {readReceiverSensors();}
     }
-    Serial.print("Desired boat angle is: ");
-    Serial.println(desBoatAngle);
+    Serial.print("------------------------------------------------------------------------------------------------------------------------------------------------------------------Desired boat angle is: ");
+    Serial.println(newdesBoatAngle);
     //if the rudder is out of range it will round to 50 or -50 respectively 
     if (rudderPosition > 50)
       {
@@ -79,10 +87,24 @@ while (sailPulseWidth >= 2030)
       {
         rudderPosition = -50;
        }
-   
+
+  if (abs(newdesBoatAngle) < abs(desBoatAngle)) //if the new desired boat angle is less than the old desired boat angle, the sail will be let out
+  {
+    sailPosition = 90;
+  }
+  if (windAngle == newdesBoatAngle) //when the newdesBoatAngle is reached, the older boat angle will be overwritten for later comparisons
+  {
+    desBoatAngle = newdesBoatAngle;
+  }
+  
   if (abs(roll) > maxRoll)  //If the roll value (which could be + or -) is greater than max allowed roll...
   {
     sailPosition = sailPosition + (abs(roll) * compensationFactor);  //adjust the sail accordingly
+    if (sailPosition > 90)  //catch if the sail is greater than what it should be
+    {
+      sailPosition = 90;
+      Serial.println("Sail position is out of range, defaulting to 90.");
+    }
   }
   
       driveSailServo(sailPosition);
@@ -94,38 +116,7 @@ while (sailPulseWidth >= 2030)
 
   
 
-  
-//the boat will sail 45 degrees to the wind
-// if ((windAngle < 45) && (windAngle >= -45)
-// {
-//     //rudderPosition = 45;
-//     sailPosition = 0;
-// }
-// else if ((windAngle < -45) && (windAngle > -90))
-// {
-//   //rudderPosition = -50;
-//   sailPosition = 13;
-// }
-// else if ((windAngle < -90) && (windAngle >= -135))
-// {
-//   //rudderPosition =  ;
-//   sailPosition = 43;
-// }
-// else if ((windAngle < -135) || (windAngle >= 135))
-// {
-//   //rudderPosition = -;
-//   sailPosition = 90;
-// }
-// else if ((windAngle <= 135 ) && (windAngle > 90))
-// {
-//   //rudderPosition = ;
-//   sailPosition = 43;
-// }
-// else 
-// {
-//   //rudderPosition = ;
-//   sailPosition = 13;
-// }
+
 
 
 /********************* send commands to motors *************************/
