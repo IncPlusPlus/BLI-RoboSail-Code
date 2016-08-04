@@ -63,7 +63,7 @@ void driveSailServo(int sailPos)
 
 void driveRudderServo(int rudderPos)
 {
-  if ((rudderPos >= -60) && (rudderPos <= 60))
+  if ((rudderPos >= -50) && (rudderPos <= 50))
   {
     rudderServoOut = map(rudderPos, -90, 90, 0, 180);
     rudderServo.write(rudderServoOut);
